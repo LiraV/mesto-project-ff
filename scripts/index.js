@@ -14,8 +14,10 @@ function createCard(nameValue, imageValue, deleteFunc) {
 
     deleteButton.addEventListener('click', deleteFunc);
 
-    cardContainer.append(cardElement);
+    return cardElement;
 }
+
+
 
 // @todo: Функция удаления карточки
 function deleteFunc(evt) {
@@ -24,6 +26,10 @@ function deleteFunc(evt) {
 }
 
 // @todo: Вывести карточки на страницу
+function renderCard(item, createCard) {
+    cardContainer.prepend(createCard(item.name, item.link, deleteFunc));
+}
+
 initialCards.forEach(function (item) {
-    createCard(item.name, item.link, deleteFunc);
+    renderCard(item, createCard);
 });
