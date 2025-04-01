@@ -17,26 +17,3 @@ export function closePopupByEsc(popups) {
         closeModal(element);
     });
 }
-
-
-//Закрытие попапов
-
-/*popupImage.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('popup')) {
-        closeModal(evt.target);
-    }
-});
-
-popupEdit.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('popup')) {
-        closeModal(evt.target);
-    }
-});
-
-popupAdd.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('popup')) {
-        closeModal(evt.target);
-    }
-});*/
-
-/*document.addEventListener('keydown', closePopupByEsc(evt));*/

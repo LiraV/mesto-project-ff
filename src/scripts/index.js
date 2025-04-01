@@ -67,16 +67,6 @@ popupEdit.addEventListener('click', function (evt) {
     }
 });
 
-/*popup.addEventListener('click', function (evt) { 
-
-        if (evt.target.classList.contains('popup')) { 
-
-            modalClose(); 
-
-        } 
-
-    }); */
-
 //Слушатель клавиатуры
 document.addEventListener('keydown', function (evt) {
     if (evt.key === 'Escape') {
