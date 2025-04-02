@@ -3,7 +3,7 @@ import '../pages/index.css';
 import { initialCards } from './cards_data.js';
 import {createCard as createCard, likeFunc} from './card.js';
 import {deleteFunc as deleteFunc} from './card.js';
-import { openModal, closeModal, closePopupByEsc } from './modal.js';
+import { openModal, closeModal } from './modal.js';
 
 //ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
 export const cardContainer = document.querySelector('.places__list');
@@ -12,7 +12,6 @@ export const profile = document.querySelector('.profile');
 export const popupImage = document.querySelector('.popup_type_image');
 export const popupEdit = document.querySelector('.popup_type_edit');
 export const popupAdd = document.querySelector('.popup_type_new-card');
-const popupCloseBtn = document.querySelector('.popup__close');
 
 export const editFormElement = popupEdit.querySelector('.popup__form');
 export const currentName = document.querySelector('.profile__title');
@@ -26,6 +25,13 @@ export const placeInput = addFormElement.querySelector('.popup__input_type_card-
 export const linkInput = addFormElement.querySelector('.popup__input_type_url');
 export const popups = document.querySelectorAll('.popup');
 
+const image = popupImage.querySelector('.popup__image');
+const imageCaption = popupImage.querySelector('.popup__caption');
+
+const popupEditBtn = document.querySelector('.profile__edit-button');
+const popupAddBtn  = document.querySelector('.profile__add-button');
+const popupCloseBtn = document.querySelector('.popup__close');
+
 // @todo: Вывести карточки на страницу
 function renderCard(item, createCard) {
     cardContainer.prepend(createCard(item.name, item.link, deleteFunc, likeFunc, openModalImage));
@@ -36,17 +42,9 @@ initialCards.forEach(function (item) {
 
 
 //Слушатель кликов
-document.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('profile__edit-button')) { //открытие модальных окон
-        openModalEdit();
-    } else if(evt.target.classList.contains('profile__add-button')) {
-        openModalAdd();
-    } else if(evt.target.classList.contains('card__image')) {
-        openModalImage(evt);
-    } else if(evt.target.classList.contains('popup__close')) { //закрытие модальных окон
-        closeModal(evt.target.parentElement.parentElement);
-    }
-});
+popupEditBtn.addEventListener('click', openModalEdit);
+popupAddBtn.addEventListener('click', openModalAdd);
+
 
 //Слушатель кликов в попапе
 popupImage.addEventListener('click', function (evt) {
@@ -67,22 +65,6 @@ popupEdit.addEventListener('click', function (evt) {
     }
 });
 
-//Слушатель клавиатуры
-document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-        closePopupByEsc(popups);
-    }
-});
-
-
-
-//Простановка лайков
-cardContainer.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('card__like-button')) {
-        likeFunc(evt);
-    }
-})
-
 //Функции открытия конкретных модальных окон
 export function openModalEdit() {
     nameInput.value = currentName.textContent;
@@ -98,12 +80,9 @@ export function openModalAdd() {
 
 export function openModalImage(evt) {
     openModal(popupImage);
-    const image = popupImage.querySelector('.popup__image');
-    popupImage.classList.add('popup_is-opened');
-
     image.src = evt.target.src;
     image.alt = evt.target.parentElement.querySelector('.card__title').innerText;
-    popupImage.querySelector('.popup__caption').innerText = evt.target.parentElement.querySelector('.card__title').innerText;
+    imageCaption.innerText = evt.target.parentElement.querySelector('.card__title').innerText;
 }
 
 //Обработчик формы Add
@@ -121,4 +100,3 @@ function handleFormSubmitEdit(evt) {
     currentJob.textContent = jobInput.value;
     closeModal(evt.target.parentElement.parentElement);
 }
-
