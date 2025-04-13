@@ -1,6 +1,6 @@
 import { deleteLike, putLike, removeCard } from "./api";
 
-export function createCard(nameValue, imageValue, deleteFunc, likeFunc, openModalImage, likeActive, removeActive, countLikes, id, config, putLike, deleteLike) {
+export function createCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -8,20 +8,20 @@ export function createCard(nameValue, imageValue, deleteFunc, likeFunc, openModa
     const likeButton = cardElement.querySelector('.card__like-button');
     const likeCountLabel = cardElement.querySelector('.card__like-count');
 
-    cardElement.querySelector('.card__title').textContent = nameValue;
-    image.src = imageValue;
-    image.alt = nameValue;
+    cardElement.querySelector('.card__title').textContent = item.name;
+    image.src = item.link;
+    image.alt = item.name;
 
-    if (likeActive) {
+    if (item.likes.some(like => like._id === userInfo._id)) {
         likeButton.classList.add('card__like-button_is-active');
     }
 
-    if (!removeActive) {
+    if (userInfo._id !== item.owner._id) {
         deleteButton.classList.add('card__delete-button-inactive');
     }
 
-    likeCountLabel.textContent = countLikes;
-    cardElement.dataset.id = id;
+    likeCountLabel.textContent = item.likes.length;
+    cardElement.dataset.id = item._id;
 
     deleteButton.addEventListener('click', function (evt) {
         deleteFunc(evt, config)
@@ -34,7 +34,7 @@ export function createCard(nameValue, imageValue, deleteFunc, likeFunc, openModa
 
     //Простановка лайков
     likeButton.addEventListener('click', function (evt) {
-        likeFunc(evt.target, config, id, putLike, deleteLike);
+        likeFunc(evt.target, config, item._id, putLike, deleteLike);
 
     });
 
@@ -49,6 +49,9 @@ export function deleteFunc(evt, config) {
         .then(() => {
             cardToDelete.remove();
         })
+        .catch((err) => {
+            console.log(err);
+          }); 
     
 }
 
@@ -60,12 +63,18 @@ export function likeFunc(heart, config, id, putLike, deleteLike) {
                 heart.classList.remove('card__like-button_is-active');
                 heart_number.textContent = newCard.likes.length;
             })
+            .catch((err) => {
+                console.log(err);
+              }); 
     } else {
         putLike(config, id)
             .then((newCard) => {
                 heart.classList.add('card__like-button_is-active');
                 heart_number.textContent = newCard.likes.length;
             })
+            .catch((err) => {
+                console.log(err);
+              }); 
     }
 }
 

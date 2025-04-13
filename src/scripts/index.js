@@ -7,6 +7,7 @@ import { enableValidation, clearValidation } from './validation.js';
 import { getUserInfo, getStudentsCards, uploadNewInfo, uploadNewCard, putLike, deleteLike, changeAvatar } from './api.js';
 
 //ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+let thisUserInfo = null;
 export const cardContainer = document.querySelector('.places__list');
 export const profile = document.querySelector('.profile');
 
@@ -55,37 +56,31 @@ export const config = {
     }
   }
 
-//Вывод инфы в шапку
+//Вывод карточек с сервера и вывод инфы в шапку
 function renderHeader(userInfo) {
     currentName.textContent = userInfo.name;
     currentJob.textContent = userInfo.about;
     currentAvatar.src = userInfo.avatar;
 }
 
-getUserInfo(config)
-  .then((userInfo) => {
-    renderHeader(userInfo);
-  });
-
-//Вывод карточек с сервера 
-function renderCard(item, createCard, likeActive, removeActive, countLikes, id, config, putLike, deleteLike) {
-    cardContainer.prepend(createCard(item.name, item.link, deleteFunc, likeFunc, openModalImage, likeActive, removeActive, countLikes, id, config, putLike, deleteLike));
+function renderCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
+    cardContainer.prepend(createCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
 }
 
 Promise.all([getStudentsCards(config), getUserInfo(config)])
   .then(([cards, userInfo]) => {
+    thisUserInfo = userInfo;
+    editFormElement.addEventListener('submit', handleFormSubmitEdit); 
+    addFormElement.addEventListener('submit', handlerFormSubmitAdd);
+    avatarFormElement.addEventListener('submit', handleFormSubmitAvatar);
+    renderHeader(userInfo);
     cards.forEach(function (item) {
-        let likeActive = false;
-        let removeActive = false;
-        if (item.likes.some(like => like._id === userInfo._id)) {
-            likeActive = true;
-        }
-        if (userInfo._id === item.owner._id) {
-            removeActive = true;
-        }
-        renderCard(item, createCard, likeActive, removeActive, item.likes.length, item._id, config, putLike, deleteLike);
+        renderCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike);
     });
   })
+  .catch((err) => {
+    console.log(err);
+  }); 
 
 
 //Слушатель кликов
@@ -118,21 +113,19 @@ export function openModalEdit() {
     nameInput.value = currentName.textContent;
     jobInput.value = currentJob.textContent;
     clearValidation(editFormElement, validationConfig);
-    const editButton = popupEdit.querySelector('.popup__button');
-    openModal(popupEdit);
-    editFormElement.addEventListener('submit', handleFormSubmitEdit); 
+    openModal(popupEdit, clearValidation, validationConfig);
 }
 
 export function openModalAdd() {
+    placeInput.value = '';
+    linkInput.value = '';
     clearValidation(addFormElement, validationConfig);
-    openModal(popupAdd);
-    addFormElement.addEventListener('submit', handlerFormSubmitAdd);
+    openModal(popupAdd, clearValidation, validationConfig);
 }
 
 export function openModalAvatar() {
     clearValidation(avatarFormElement, validationConfig);
-    openModal(popupAvatar);
-    avatarFormElement.addEventListener('submit', handleFormSubmitAvatar);
+    openModal(popupAvatar, clearValidation, validationConfig);
 }
 
 export function openModalImage(evt) {
@@ -147,11 +140,14 @@ function handlerFormSubmitAdd(evt) {
     evt.preventDefault();
     evt.target.querySelector('.popup__button').textContent = 'Сохранение...';
     uploadNewCard(config, placeInput.value, linkInput.value)
-    .then(() => {
-            cardContainer.prepend(createCard(placeInput.value, linkInput.value, deleteFunc, likeFunc, openModalImage, false, true, 0, config, putLike, deleteLike));
+    .then((item) => {
+            cardContainer.prepend(createCard(item, thisUserInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
             addFormElement.reset();
             closeModal(evt.target.parentElement.parentElement);
     })
+    .catch((err) => {
+        console.log(err);
+      })
     .finally(() => {
         evt.target.querySelector('.popup__button').textContent = 'Сохранить';
     });
@@ -167,9 +163,12 @@ function handleFormSubmitEdit(evt) {
         currentJob.textContent = jobInput.value;
         closeModal(evt.target.parentElement.parentElement);
     })
+    .catch((err) => {
+        console.log(err);
+      })
     .finally(() => {
         evt.target.querySelector('.popup__button').textContent = 'Сохранить';
-    });
+    }); 
 
 }
 
@@ -182,6 +181,9 @@ function handleFormSubmitAvatar(evt) {
         currentAvatar.src = avatarInput.value;
         closeModal(evt.target.parentElement.parentElement);
     })
+    .catch((err) => {
+        console.log(err);
+      })
     .finally(() => {
         evt.target.querySelector('.popup__button').textContent = 'Сохранить';
     });

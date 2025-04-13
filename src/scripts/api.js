@@ -1,17 +1,15 @@
+function checkError (res) {
+    if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 export const getUserInfo = (config) => {
     return fetch(`${config.baseUrl}/users/me`, {
         headers: config.headers
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError);
         
 }
 
@@ -19,16 +17,7 @@ export const getStudentsCards = (config) => {
     return fetch(`${config.baseUrl}/cards`, {
         headers: config.headers
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError);
         
 }
 
@@ -41,16 +30,7 @@ export const uploadNewInfo = (config, name, job) => {
           about: job
         })
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError);
         
 }
 
@@ -63,16 +43,7 @@ export const uploadNewCard = (config, cardName, cardLink) => {
           link: cardLink
         })
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError);
 }
 
 export const removeCard = (config, id) => {
@@ -80,16 +51,7 @@ export const removeCard = (config, id) => {
         method: 'DELETE',
         headers: config.headers
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError)
 }
 
 export const putLike = (config, id) => {
@@ -97,16 +59,7 @@ export const putLike = (config, id) => {
         method: 'PUT',
         headers: config.headers
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError)
 }
 
 export const deleteLike = (config, id) => {
@@ -114,16 +67,7 @@ export const deleteLike = (config, id) => {
         method: 'DELETE',
         headers: config.headers
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          }); 
+        .then(checkError)
 }
 
 export const changeAvatar = (config, avatarUrl) => {
@@ -134,14 +78,5 @@ export const changeAvatar = (config, avatarUrl) => {
           avatar: avatarUrl
         })
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`);
-        })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-          });
+        .then(checkError)
 }

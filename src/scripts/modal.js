@@ -1,21 +1,14 @@
 //общие функции открытия и закрытия модальных окон
 
-export function openModal(popup) {
+export function openModal(popup, clearValidation = () => {}, validationConfig = null) {
     popup.classList.add('popup_is-opened');
-    const inputList = Array.from(popup.querySelectorAll('.popup__input'));
-    inputList.forEach((item) => {
-        item.classList.remove('form__input_type_error');
-    });
-    const errorList = Array.from(popup.querySelectorAll('.form__input-error'));
-    errorList.forEach((item) => {
-        item.classList.remove('form__input-error_active');
-    });
+    clearValidation(popup.querySelector('.popup__form'), validationConfig);
     document.addEventListener('keydown', closePopupByEsc);
     popup.querySelector('.popup__close').addEventListener('click', closePopup);
 }
 export function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
-    document.removeEventListener('keydown', closePopupByEsc); 
+    document.removeEventListener('keydown', closePopupByEsc);           //УДАЛЕНИЕ СЛУШАТЕЛЯ KEYDOWN
     popup.querySelector('.popup__close').removeEventListener('click', closePopup);
 }
     
