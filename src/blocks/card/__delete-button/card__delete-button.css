@@ -21,3 +21,12 @@
 .card__delete-button:hover {
   opacity: 0.6;
 }
+
+.card__delete-button-inactive {
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  opacity: 0%;
+}

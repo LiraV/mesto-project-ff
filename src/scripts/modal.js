@@ -2,6 +2,14 @@
 
 export function openModal(popup) {
     popup.classList.add('popup_is-opened');
+    const inputList = Array.from(popup.querySelectorAll('.popup__input'));
+    inputList.forEach((item) => {
+        item.classList.remove('form__input_type_error');
+    });
+    const errorList = Array.from(popup.querySelectorAll('.form__input-error'));
+    errorList.forEach((item) => {
+        item.classList.remove('form__input-error_active');
+    });
     document.addEventListener('keydown', closePopupByEsc);
     popup.querySelector('.popup__close').addEventListener('click', closePopup);
 }
