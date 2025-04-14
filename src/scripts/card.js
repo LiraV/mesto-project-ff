@@ -1,6 +1,6 @@
 import { deleteLike, putLike, removeCard } from "./api";
 
-export function createCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
+export function createCard(item, userId, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -12,11 +12,11 @@ export function createCard(item, userInfo, deleteFunc, likeFunc, openModalImage,
     image.src = item.link;
     image.alt = item.name;
 
-    if (item.likes.some(like => like._id === userInfo._id)) {
+    if (item.likes.some(like => like._id === userId)) {
         likeButton.classList.add('card__like-button_is-active');
     }
 
-    if (userInfo._id !== item.owner._id) {
+    if (userId !== item.owner._id) {
         deleteButton.classList.add('card__delete-button-inactive');
     }
 

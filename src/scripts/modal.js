@@ -1,8 +1,7 @@
 //общие функции открытия и закрытия модальных окон
 
-export function openModal(popup, clearValidation = () => {}, validationConfig = null) {
+export function openModal(popup) {
     popup.classList.add('popup_is-opened');
-    clearValidation(popup.querySelector('.popup__form'), validationConfig);
     document.addEventListener('keydown', closePopupByEsc);
     popup.querySelector('.popup__close').addEventListener('click', closePopup);
 }

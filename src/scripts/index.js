@@ -63,19 +63,19 @@ function renderHeader(userInfo) {
     currentAvatar.src = userInfo.avatar;
 }
 
-function renderCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
-    cardContainer.prepend(createCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
+function renderCard(item, userId, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike) {
+    cardContainer.prepend(createCard(item, userId, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
 }
 
 Promise.all([getStudentsCards(config), getUserInfo(config)])
   .then(([cards, userInfo]) => {
-    thisUserInfo = userInfo;
+    thisUserInfo = userInfo;        //СОХРАНЕНИЕ ИНФЫ ПОЛЬЗОВАТЕЛЯ В ГЛОБАЛЬНУЮ 
     editFormElement.addEventListener('submit', handleFormSubmitEdit); 
     addFormElement.addEventListener('submit', handlerFormSubmitAdd);
     avatarFormElement.addEventListener('submit', handleFormSubmitAvatar);
     renderHeader(userInfo);
     cards.forEach(function (item) {
-        renderCard(item, userInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike);
+        renderCard(item, userInfo._id, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike);
     });
   })
   .catch((err) => {
@@ -113,19 +113,19 @@ export function openModalEdit() {
     nameInput.value = currentName.textContent;
     jobInput.value = currentJob.textContent;
     clearValidation(editFormElement, validationConfig);
-    openModal(popupEdit, clearValidation, validationConfig);
+    openModal(popupEdit);
 }
 
 export function openModalAdd() {
     placeInput.value = '';
     linkInput.value = '';
     clearValidation(addFormElement, validationConfig);
-    openModal(popupAdd, clearValidation, validationConfig);
+    openModal(popupAdd);
 }
 
 export function openModalAvatar() {
     clearValidation(avatarFormElement, validationConfig);
-    openModal(popupAvatar, clearValidation, validationConfig);
+    openModal(popupAvatar);
 }
 
 export function openModalImage(evt) {
@@ -141,7 +141,7 @@ function handlerFormSubmitAdd(evt) {
     evt.target.querySelector('.popup__button').textContent = 'Сохранение...';
     uploadNewCard(config, placeInput.value, linkInput.value)
     .then((item) => {
-            cardContainer.prepend(createCard(item, thisUserInfo, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
+            cardContainer.prepend(createCard(item, thisUserInfo._id, deleteFunc, likeFunc, openModalImage, config, putLike, deleteLike));
             addFormElement.reset();
             closeModal(evt.target.parentElement.parentElement);
     })
